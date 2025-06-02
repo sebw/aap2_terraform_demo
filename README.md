@@ -23,6 +23,10 @@ We will integrate both technologies inside AAP:
 - an AWS account
 - an AAP 2.5 with admin rights
 - an Ansible Execution Environment that contains `cloud.terraform` and the `terraform` binary (prebuilt for this demo)
+- `botocore` & `boto3` python libraries
+	```
+	pip3 install botocore boto3
+	```
 
 ## Preparing your AAP and AWS environments
 
