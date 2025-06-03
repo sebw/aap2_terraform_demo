@@ -20,9 +20,9 @@ We will integrate both technologies inside AAP:
 
 ## Requirements
 
-- an AWS account
+- an AWS account with sufficient permissions
 - an AAP 2.5 with admin rights
-- an Ansible Execution Environment that contains `cloud.terraform` and the `terraform` binary (prebuilt for this demo)
+- an Ansible Execution Environment that contains the `cloud.terraform` Ansible Collection and the `terraform` binary (prebuilt for the demo and available at `ghcr.io/sebw/ee_terraform`)
 
 ## Preparing your AAP and AWS environments
 
