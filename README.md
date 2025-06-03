@@ -2,7 +2,7 @@
 
 Configuration files and examples used for demonstrating Terraform and Ansible Automation Platform (AAP) integrations. 
 
-Initially we will demonstrate Terraform and Ansible, individually from the CLI.
+Initially we will demonstrate Terraform and Ansible, individually from the CLI (folders `ansible-cli` and `terraform-cli`).
 
 This will bring up some challenges around the shared management of:
 
