@@ -6,6 +6,12 @@
   gather_facts: true
 
   tasks:
+    - name: Wait for the hosts to become reachable
+      wait_for_connection:
+        timeout: 180
+        delay: 5
+        sleep: 5
+
     - name: Amazon Linux
       block:
       - name: Install httpd on Amazon Linux
