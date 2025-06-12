@@ -2,8 +2,8 @@
 - name: Install and configure Apache HTTP Server on any Linux distribution
   hosts: all
   become: yes
-  # needed for OS distribution
-  gather_facts: true
+  # we will gather facts once we know for sure the EC2 instances are up
+  gather_facts: false
 
   tasks:
     - name: Wait for the hosts to become reachable
@@ -11,6 +11,10 @@
         timeout: 180
         delay: 5
         sleep: 5
+
+    - name: Gather system facts
+      ansible.builtin.setup:
+        filter: distribution
 
     - name: Amazon Linux
       block:
