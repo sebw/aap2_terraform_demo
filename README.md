@@ -1,5 +1,11 @@
 # Terraform + Ansible Demo
 
+This repository was used during @vseynhae and @sebw talk at Voxxed Days Luxembourg 2025.
+
+Slides are available [here](https://raw.githubusercontent.com/sebw/aap2_terraform_demo/refs/heads/main/pdf/voxxed.pdf)
+
+## Intro
+
 Configuration files and examples used for demonstrating Terraform and Ansible Automation Platform (AAP) integrations. 
 
 Initially we will demonstrate Terraform and Ansible, individually from the CLI (folders `ansible-cli` and `terraform-cli`).
@@ -78,5 +84,3 @@ When Terraform is done, the state file is stored in the S3 bucket.
 The workflow will refresh the inventory (based on the state file).
 
 The next job will install Apache on the instances found in the Terraform state file.
-
- 
