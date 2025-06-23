@@ -27,8 +27,8 @@ resource "aws_vpc" "main_vpc" {
   }
 }
 
-resource "aws_security_group" "voxxed_sg" {
-  name        = "voxxed-sg-${random_string.suffix.result}"
+resource "aws_security_group" "techdaylux_sg" {
+  name        = "techdaylux-sg-${random_string.suffix.result}"
   description = "Allow SSH and HTTP"
   vpc_id      = aws_vpc.main_vpc.id
 
@@ -57,7 +57,7 @@ resource "aws_security_group" "voxxed_sg" {
   }
 
   tags = {
-    Name = "voxxed-sg-${random_string.suffix.result}"
+    Name = "techdaylux-sg-${random_string.suffix.result}"
   }
 }
 
@@ -97,14 +97,14 @@ resource "aws_route_table_association" "public_assoc" {
   route_table_id = aws_route_table.public_rt.id
 }
 
-resource "aws_instance" "ubuntu" {
-  ami           = "ami-03250b0e01c28d196"
+resource "aws_instance" "rhel" {
+  ami           = "ami-0f098038da0fc50c6"
   instance_type = "t3.medium"
   subnet_id                   = aws_subnet.public_subnet.id
   associate_public_ip_address = true
-  key_name = "voxxed_key"
-  vpc_security_group_ids = [aws_security_group.voxxed_sg.id]
+  key_name = "TechDayLux_key"
+  vpc_security_group_ids = [aws_security_group.techdaylux_sg.id]
   tags = {
-    Name = "Ubuntu Server-${random_string.suffix.result}"
+    Name = "RHELdemo1"
   }
 }
