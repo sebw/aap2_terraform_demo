@@ -3,6 +3,9 @@
   hosts: localhost
   gather_facts: False
 
+  vars:
+    event: TechDayLux
+
   vars_files:
   - vault.yml
 
@@ -13,7 +16,7 @@
   tasks:
   - name: Import pubkey into a new EC2 key pair
     amazon.aws.ec2_key:
-      name: voxxed_key
+      name: "{{ event }}_key"
       region: eu-central-1
       access_key: "{{ aws_access }}"
       secret_key: "{{ aws_secret }}"
@@ -30,7 +33,7 @@
 
   - name: Create AAP organization
     ansible.platform.organization:
-      name: "voxxed"
+      name: "{{ event }}"
       state: present
       gateway_hostname: "{{ aap2_host }}"
       gateway_username: "{{ aap2_username }}"
@@ -53,8 +56,8 @@
       controller_username: "{{ aap2_username }}"
       controller_password: "{{ aap2_password }}"
       validate_certs: True
-      name: "voxxed AWS creds"
-      organization: "voxxed"
+      name: "{{ event }} AWS creds"
+      organization: "{{ event }}"
       state: present
       credential_type: "Amazon Web Services"
       inputs:
@@ -67,9 +70,9 @@
       controller_username: "{{ aap2_username }}"
       controller_password: "{{ aap2_password }}"
       validate_certs: true
-      name: "voxxed Terraform state credential"
+      name: "{{ event }} Terraform state credential"
       credential_type: Terraform backend configuration
-      organization: "voxxed"
+      organization: "{{ event }}"
       inputs:
         configuration: |
           bucket = "{{ aws_bucket_name }}"
@@ -84,9 +87,9 @@
       controller_username: "{{ aap2_username }}"
       controller_password: "{{ aap2_password }}"
       validate_certs: true
-      name: "voxxed AWS EC2 SSH"
+      name: "{{ event }} AWS EC2 SSH"
       credential_type: Machine
-      organization: "voxxed"
+      organization: "{{ event }}"
       inputs:
         username: ec2-user
         ssh_key_data: "{{ ssh_private_key }}"
@@ -97,8 +100,8 @@
       controller_username: "{{ aap2_username }}"
       controller_password: "{{ aap2_password }}"
       validate_certs: true
-      name: "voxxed inventory"
-      organization: "voxxed"
+      name: "{{ event }} inventory"
+      organization: "{{ event }}"
       state: present
 
   - name: Add a dynamic source to the inventory using the TF state file
@@ -110,12 +113,12 @@
       name: "Terraform State"
       description: Source for inventory
       execution_environment: "EE_terraform"
-      inventory: "voxxed inventory"
+      inventory: "{{ event }} inventory"
       source: terraform
-      credential: "voxxed Terraform state credential"
+      credential: "{{ event }} Terraform state credential"
       overwrite: true
       update_on_launch: true
-      organization: voxxed
+      organization: "{{ event }}"
       verbosity: 1
       source_vars:
         backend_type: s3
@@ -128,13 +131,13 @@
       controller_username: "{{ aap2_username }}"
       controller_password: "{{ aap2_password }}"
       validate_certs: True
-      name: "voxxed"
-      organization: "voxxed"
+      name: "{{ event }}"
+      organization: "{{ event }}"
       scm_type: git
       scm_update_on_launch: True
       scm_update_cache_timeout: 60
       scm_url: https://github.com/sebw/aap2_terraform_demo
-      scm_branch: main
+      scm_branch: techday
       state: present
 
   - name: Update project before creating the jobs
@@ -143,7 +146,7 @@
       controller_username: "{{ aap2_username }}"
       controller_password: "{{ aap2_password }}"
       validate_certs: True
-      project: "voxxed"
+      project: "{{ event }}"
       timeout: 30
   
   - name: Create job for terraform plan
@@ -154,15 +157,15 @@
       validate_certs: True
       name: "1 - Terraform plan"
       job_type: "check"
-      organization: "voxxed"
+      organization: "{{ event }}"
       state: present
-      project: "voxxed"
-      inventory: "voxxed inventory"
+      project: "{{ event }}"
+      inventory: "{{ event }} inventory"
       playbook: "all-in-one/ansible/1-deploy.yml"
       execution_environment: EE_terraform
       credentials:
-      - "voxxed AWS creds"
-      - "voxxed Terraform state credential"
+      - "{{ event }} AWS creds"
+      - "{{ event }} Terraform state credential"
 
   - name: Create job for terraform apply
     ansible.controller.job_template:
@@ -172,15 +175,15 @@
       validate_certs: True
       name: "2 - Terraform apply"
       job_type: "run"
-      organization: "voxxed"
+      organization: "{{ event }}"
       state: present
-      project: "voxxed"
-      inventory: "voxxed inventory"
+      project: "{{ event }}"
+      inventory: "{{ event }} inventory"
       playbook: "all-in-one/ansible/1-deploy.yml"
       execution_environment: EE_terraform
       credentials:
-      - "voxxed AWS creds"
-      - "voxxed Terraform state credential"
+      - "{{ event }} AWS creds"
+      - "{{ event }} Terraform state credential"
 
   - name: Create job for deploying Apache Web Server
     ansible.controller.job_template:
@@ -189,13 +192,13 @@
       controller_password: "{{ aap2_password }}"
       validate_certs: True
       name: "3 - Install Apache Web Server"
-      organization: "voxxed"
+      organization: "{{ event }}"
       state: present
-      project: "voxxed"
-      inventory: "voxxed inventory"
+      project: "{{ event }}"
+      inventory: "{{ event }} inventory"
       playbook: "all-in-one/ansible/2-apache.yml"
       credentials:
-      - "voxxed AWS EC2 SSH"
+      - "{{ event }} AWS EC2 SSH"
       extra_vars:
         message: Hello World
 
@@ -206,15 +209,15 @@
       controller_password: "{{ aap2_password }}"
       validate_certs: True
       name: "4 - Terraform destroy"
-      organization: "voxxed"
+      organization: "{{ event }}"
       state: present
-      project: "voxxed"
-      inventory: "voxxed inventory"
+      project: "{{ event }}"
+      inventory: "{{ event }} inventory"
       playbook: "all-in-one/ansible/3-destroy.yml"
       execution_environment: EE_terraform
       credentials:
-      - "voxxed AWS creds"
-      - "voxxed Terraform state credential"
+      - "{{ event }} AWS creds"
+      - "{{ event }} Terraform state credential"
 
   - name: Create a workflow that plugs everything together
     ansible.controller.workflow_job_template:
@@ -223,13 +226,13 @@
       controller_username: "{{ aap2_username }}"
       controller_password: "{{ aap2_password }}"
       validate_certs: True
-      organization: "voxxed"
+      organization: "{{ event }}"
       state: present
       schema:
       - identifier: tf_plan
         unified_job_template:
           organization:
-            name: "voxxed"
+            name: "{{ event }}"
           name: "1 - Terraform plan"
           type: job_template
         related:
@@ -239,7 +242,7 @@
         all_parents_must_converge: false
         unified_job_template:
           organization:
-            name: "voxxed"
+            name: "{{ event }}"
           name: "Do you approve this terraform plan?"
           type: workflow_approval
           timeout: 300
@@ -249,7 +252,7 @@
       - identifier: tf_apply
         unified_job_template:
           organization:
-            name: "voxxed"
+            name: "{{ event }}"
           name: "2 - Terraform apply"
           alias: "tf plan"
           type: job_template
@@ -261,14 +264,14 @@
       - identifier: apache
         unified_job_template:
           organization:
-            name: "voxxed"
+            name: "{{ event }}"
           name: "3 - Install Apache Web Server"
           type: job_template
       - identifier: approve_cleanup
         all_parents_must_converge: false
         unified_job_template:
           organization:
-            name: "voxxed"
+            name: "{{ event }}"
           name: "Do you approve cleaning up EC2 instances?"
           type: workflow_approval
           timeout: 600
@@ -279,7 +282,7 @@
         all_parents_must_converge: false
         unified_job_template:
           organization:
-            name: "voxxed"
+            name: "{{ event }}"
           name: "4 - Terraform destroy"
           type: job_template
     tags: workflow
