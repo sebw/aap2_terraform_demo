@@ -22,8 +22,8 @@ resource "aws_vpc" "main_vpc" {
   }
 }
 
-resource "aws_security_group" "voxxed_sg" {
-  name        = "voxxed-sg"
+resource "aws_security_group" "tdlux_sg" {
+  name        = "tdlux-sg"
   description = "Allow SSH and HTTP"
   vpc_id      = aws_vpc.main_vpc.id
 
@@ -52,7 +52,7 @@ resource "aws_security_group" "voxxed_sg" {
   }
 
   tags = {
-    Name = "voxxed-sg"
+    Name = "tdlux-sg"
   }
 }
 
@@ -92,26 +92,14 @@ resource "aws_route_table_association" "public_assoc" {
   route_table_id = aws_route_table.public_rt.id
 }
 
-resource "aws_instance" "centos" {
-  ami           = "ami-00513967e6b47e386"
+resource "aws_instance" "rhel" {
+  ami           = "ami-0f098038da0fc50c6"
   instance_type = "t3.medium"
   subnet_id                   = aws_subnet.public_subnet.id
   associate_public_ip_address = true
-  key_name = "voxxed_key"
-  vpc_security_group_ids = [aws_security_group.voxxed_sg.id]
+  key_name = "TechDayLux_key"
+  vpc_security_group_ids = [aws_security_group.tdlux_sg.id]
   tags = {
-    Name = "CentOS Linux"
-  }
-}
-
-resource "aws_instance" "amazon" {
-  ami           = "ami-00a44bd8918c7ee43"
-  instance_type = "t3.medium"
-  subnet_id                   = aws_subnet.public_subnet.id
-  associate_public_ip_address = true
-  key_name = "voxxed_key"
-  vpc_security_group_ids = [aws_security_group.voxxed_sg.id]
-  tags = {
-    Name = "Amazon Linux"
+    Name = "RHELdemo2"
   }
 }
