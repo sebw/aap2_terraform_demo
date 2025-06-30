@@ -1,6 +1,6 @@
 # Terraform + Ansible Demo
 
-This repository was used during @vseynhae and @sebw talk at Voxxed Days Luxembourg 2025.
+This repository was used during @vseynhae and @sebw talk at Red Hat Tech Day Luxembourg (branch `techday`) and Voxxed Days Luxembourg 2025 (branch `main`).
 
 Slides are available [here](https://raw.githubusercontent.com/sebw/aap2_terraform_demo/refs/heads/main/pdf/voxxed.pdf)
 
