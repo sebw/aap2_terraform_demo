@@ -1,5 +1,9 @@
 # Terraform + Ansible Demo
 
+THIS REPOSITORY WILL NO LONGER RECEIVE UPDATES.  
+CHECK THE LATEST CODE AND FEATURES FOR THIS DEMO UNDER THE RED HAT BELUX GITHUB REPO  
+[https://github.com/RedHatBelux/AAP2_terraform/](https://github.com/RedHatBelux/AAP2_terraform/)
+
 This repository was used during @vseynhae and @sebw talk at Voxxed Days Luxembourg 2025.
 
 Slides are available [here](https://raw.githubusercontent.com/sebw/aap2_terraform_demo/refs/heads/main/pdf/voxxed.pdf)
